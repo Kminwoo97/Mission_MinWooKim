@@ -59,5 +59,5 @@ db.password = 비밀번호
 #OAuth 발급키
 KAKAO_ID = 카카오 발급 ID
 GOOGLE_ID = 구글 발급 ID
-GOOGLE_SECRET = 구글 발급 ID
+GOOGLE_SECRET = 구글 발급 Secret Key
 ```

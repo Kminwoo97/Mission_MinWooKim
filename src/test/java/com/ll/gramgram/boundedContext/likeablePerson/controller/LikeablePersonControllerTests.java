@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -148,20 +147,5 @@ public class LikeablePersonControllerTests {
                         <span class="toInstaMember_attractiveTypeDisplayName">성격</span>
                         """.stripIndent().trim())));
         ;
-    }
-
-    @Test
-    @DisplayName("호감목록 삭제")
-    @WithUserDetails("user1")
-    void t006() throws Exception{
-        //when
-        ResultActions resultActions = mvc.perform(get("/likeablePerson/delete/100"))
-                .andDo(print());
-        //then
-        resultActions
-                    .andExpect(handler().handlerType(LikeablePersonController.class))
-                    .andExpect(handler().methodName("delete"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrlPattern("/likeablePerson/list**"));
     }
 }

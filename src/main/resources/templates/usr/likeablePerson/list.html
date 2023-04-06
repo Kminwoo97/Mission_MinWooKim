@@ -21,7 +21,11 @@
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
                 <span class="toInstaMember_attractiveTypeDisplayName"
                       th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
-                <a th:href="@{|delete/${likeablePerson.id}|}" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
+
+                <!-- a 태그는 기본적으로 GET 요청인데 javascript 를 이용해서 아래의 form 으로 요청을 보낸다.
+                form 태그는 기본적으로 get,post만 가능하지만 spring.mvc.hiddenmethod.enable 설정을 true로 하면 허용된다.-->
+                <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
+                <form hidden th:action="@{|delete/${likeablePerson.id}|}" th:method="DELETE"></form>
             </li>
         </ul>
     </th:block>

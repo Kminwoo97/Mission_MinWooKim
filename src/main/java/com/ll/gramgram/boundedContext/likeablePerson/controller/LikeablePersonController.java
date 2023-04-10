@@ -66,14 +66,17 @@ public class LikeablePersonController {
     //호감 목록 삭제
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer likeablePersonId){
-        Member loginMember = rq.getMember();
+    public String delete(@PathVariable("id") Long likeablePersonId){
+        //삭제하려는 호감이 존재하는지 꺼내와본다.
+        LikeablePerson likeablePerson = likeablePersonService.findById(likeablePersonId);
 
-        RsData deleteRsData = likeablePersonService.delete(loginMember, likeablePersonId);
-        if (deleteRsData.isFail()) {
-            rq.historyBack(deleteRsData.getMsg());
+        //로그인 한 사용자가 삭제할 수 있는지 체크한다.
+        RsData canActorDeleteRsData = likeablePersonService.canActorDelete(rq.getMember(), likeablePerson);
+        if (canActorDeleteRsData.isFail()) {
+            return rq.historyBack(canActorDeleteRsData);
         }
 
+        RsData deleteRsData = likeablePersonService.delete(likeablePerson);
         return rq.redirectWithMsg("/likeablePerson/list", deleteRsData.getMsg());
     }
 }

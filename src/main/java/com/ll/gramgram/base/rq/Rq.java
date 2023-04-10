@@ -7,6 +7,7 @@ import com.ll.gramgram.standard.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -69,6 +70,9 @@ public class Rq {
         String key = "historyBackErrorMsg___" + referer;
         req.setAttribute("localStorageKeyAboutHistoryBackErrorMsg", key);
         req.setAttribute("historyBackErrorMsg", msg);
+        //http 상태코드를 400으로 바꾼다. -> 요청자에게 잘못된 요청이라고 알려준다.
+        resp.setStatus(400);
+        System.out.println("400 에러잖아...");
         return "common/js";
     }
 

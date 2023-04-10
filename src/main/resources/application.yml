@@ -3,6 +3,7 @@ spring:
   profiles:
     active: dev
 
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${db.url}
@@ -19,6 +20,12 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             client-authentication-method: POST
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            scope:
+              - email
+              - profile
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -33,6 +40,11 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+  #html form 태크에서 delete, put, patch 메서드 허용
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging:
   level:
     root: INFO

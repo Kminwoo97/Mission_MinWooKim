@@ -71,8 +71,7 @@ public class Rq {
         req.setAttribute("localStorageKeyAboutHistoryBackErrorMsg", key);
         req.setAttribute("historyBackErrorMsg", msg);
         //http 상태코드를 400으로 바꾼다. -> 요청자에게 잘못된 요청이라고 알려준다.
-        resp.setStatus(400);
-        System.out.println("400 에러잖아...");
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return "common/js";
     }
 

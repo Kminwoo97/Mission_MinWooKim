@@ -16,6 +16,7 @@
     </th:block>
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
+        <span th:text="|호감 표시 인원 수 : ${likeablePeople.size()}(최대 10명 등록)|"></span>
         <ul>
             <li th:each="likeablePerson: ${likeablePeople}">
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>

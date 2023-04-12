@@ -205,4 +205,13 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    @DisplayName("내가 등록한 호감대상 리스트 조회하기")
+    @WithUserDetails("user3")
+    void t009() throws Exception{
+        //when
+
+        //then
+    }
 }

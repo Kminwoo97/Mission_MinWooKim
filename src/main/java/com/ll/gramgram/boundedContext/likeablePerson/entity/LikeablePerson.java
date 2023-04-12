@@ -18,7 +18,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 @ToString
 @Entity
-@Getter
+@Getter @Setter
 public class LikeablePerson {
     @Id
     @GeneratedValue(strategy = IDENTITY)

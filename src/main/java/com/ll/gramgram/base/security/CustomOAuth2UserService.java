@@ -1,9 +1,16 @@
 package com.ll.gramgram.base.security;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -32,6 +39,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String oauthId = oAuth2User.getName();
 
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
+
+        //네이버 로그인
+        if (providerTypeCode.equals("NAVER")) {
+            Map<String, Object> response = oAuth2User.getAttribute("response");
+            oauthId= (String)response.get("id");
+        }
 
         String username = providerTypeCode + "__%s".formatted(oauthId);
 

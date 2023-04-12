@@ -40,8 +40,20 @@ public class LikeablePersonController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+        RsData verifyRsData = likeablePersonService.verify(rq.getMember(), addForm.getUsername(), addForm.attractiveTypeCode);
+        //검증 실패
+        if(verifyRsData.isFail())
+            return rq.historyBack(verifyRsData);
 
+        //검증 성공 - update
+        if(verifyRsData.getData() != null) {
+            RsData<LikeablePerson> updateRsData = likeablePersonService.update(addForm.getUsername(),
+                    addForm.getAttractiveTypeCode(), (LikeablePerson) verifyRsData.getData());
+            return rq.redirectWithMsg("/likeablePerson/list", updateRsData);
+        }
+
+        //검증 성공 - like
+        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }

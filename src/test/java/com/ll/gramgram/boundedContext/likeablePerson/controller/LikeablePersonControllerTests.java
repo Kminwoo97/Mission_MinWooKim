@@ -1,18 +1,25 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 
+import com.ll.gramgram.boundedContext.likeablePerson.dto.AddForm;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
+import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -30,6 +37,9 @@ public class LikeablePersonControllerTests {
 
     @Autowired
     private LikeablePersonService likeablePersonService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("등록 폼(인스타 인증을 안해서 폼 대신 메세지)")
@@ -207,11 +217,74 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("내가 등록한 호감대상 리스트 조회하기")
+    @DisplayName("동일한 사유로는 호감등록이 불가능하다.")
     @WithUserDetails("user3")
     void t009() throws Exception{
+
         //when
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf())
+                        .param("username", "insta_user4")
+                        .param("attractiveTypeCode", String.valueOf(1)));
+        //then
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("이미 등록한 호감대상에게 호감사유 변경")
+    @WithUserDetails("user3")
+    void t010() throws Exception{
+        //given
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findByUsername(user.getUsername()).get();
+        int beforeSize = member.getInstaMember().getFromLikeablePeople().size();
+
+        //when
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/add")
+                        .with(csrf())
+                        .param("username", "insta_user4")
+                        .param("attractiveTypeCode", String.valueOf(3)));
+
 
         //then
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is3xxRedirection());
+
+        //변경감지로 인해서 member 다시 조회 안해도된다.
+        int afterSize = member.getInstaMember().getFromLikeablePeople().size();
+        Assertions.assertThat(beforeSize).isEqualTo(afterSize);
+    }
+
+    @Test
+    @DisplayName("호감등록은 최대 10명까지만 가능하다.")
+    @WithUserDetails("user3")
+    void t011() throws Exception{
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //when - 15명을 호감 등록해보자.
+        ResultActions resultActions = null;
+        for(int i=1; i<=15; i++){
+            resultActions = mvc
+                    .perform(post("/likeablePerson/add")
+                            .with(csrf())
+                            .param("username", "AAAA" + i)
+                            .param("attractiveTypeCode", String.valueOf(1)));
+        }
+
+        //then
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("add"))
+                .andExpect(status().is4xxClientError());
+        Member member = memberRepository.findByUsername(user.getUsername()).get();
+        int size = member.getInstaMember().getFromLikeablePeople().size();
+        Assertions.assertThat(size).isEqualTo(10);
     }
 }

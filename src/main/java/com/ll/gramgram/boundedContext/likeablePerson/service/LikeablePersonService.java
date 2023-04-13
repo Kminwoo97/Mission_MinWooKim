@@ -47,6 +47,7 @@ public class LikeablePersonService {
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
+
     public RsData verify(Member member, String username, int attractiveTypeCode) {
         if (member.hasConnectedInstaMember() == false) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
@@ -80,11 +81,10 @@ public class LikeablePersonService {
     @Transactional //-> update 쿼리가 나가도록 설정한다.
     public RsData update(String username, int attractiveTypeCode, LikeablePerson likeablePerson) {
         String beforeAttractionCode = likeablePerson.getAttractiveTypeDisplayName();
-        LikeablePerson findLikeablePerson = likeablePersonRepository.findById(likeablePerson.getId()).get();
-        findLikeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+        likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
 
         return RsData.of("S-2", "인스타유저(%s)의 호감사유를 '%s' 에서 '%s' 로 변경했습니다.".formatted(
-                username, beforeAttractionCode, findLikeablePerson.getAttractiveTypeDisplayName()));
+                username, beforeAttractionCode, likeablePerson.getAttractiveTypeDisplayName()));
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {

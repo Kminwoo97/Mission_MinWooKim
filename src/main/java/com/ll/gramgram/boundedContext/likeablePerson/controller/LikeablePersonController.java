@@ -3,13 +3,10 @@ package com.ll.gramgram.boundedContext.likeablePerson.controller;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
-import com.ll.gramgram.boundedContext.likeablePerson.dto.AddForm;
+import com.ll.gramgram.boundedContext.likeablePerson.dto.LikeForm;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
-import com.ll.gramgram.boundedContext.member.entity.Member;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -26,30 +23,30 @@ public class LikeablePersonController {
     private final LikeablePersonService likeablePersonService;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/add")
-    public String showAdd() {
-        return "usr/likeablePerson/add";
+    @GetMapping("/like")
+    public String showLike() {
+        return "usr/likeablePerson/like";
     }
 
 
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/add")
-    public String add(@Valid AddForm addForm) {
-        RsData verifyRsData = likeablePersonService.verify(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+    @PostMapping("/like")
+    public String like(@Valid LikeForm likeForm) {
+        RsData verifyRsData = likeablePersonService.canAdd(rq.getMember(), likeForm.getUsername(), likeForm.getAttractiveTypeCode());
         //검증 실패
         if(verifyRsData.isFail())
             return rq.historyBack(verifyRsData);
 
         //검증 성공 - update
         if(verifyRsData.getData() != null) {
-            RsData<LikeablePerson> updateRsData = likeablePersonService.update(addForm.getUsername(),
-                    addForm.getAttractiveTypeCode(), (LikeablePerson) verifyRsData.getData());
+            RsData<LikeablePerson> updateRsData = likeablePersonService.update(likeForm.getUsername(),
+                    likeForm.getAttractiveTypeCode(), (LikeablePerson) verifyRsData.getData());
             return rq.redirectWithMsg("/likeablePerson/list", updateRsData);
         }
 
         //검증 성공 - like
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), likeForm.getUsername(), likeForm.getAttractiveTypeCode());
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }

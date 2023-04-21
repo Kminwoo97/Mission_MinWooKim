@@ -49,7 +49,7 @@ public class LikeablePersonService {
     }
 
 
-    public RsData verify(Member member, String username, int attractiveTypeCode) {
+    public RsData canAdd(Member member, String username, int attractiveTypeCode) {
         if (member.hasConnectedInstaMember() == false) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
@@ -59,8 +59,8 @@ public class LikeablePersonService {
         }
 
         InstaMember fromInstaMember = member.getInstaMember();
-        List<LikeablePerson> MyLikePeople = fromInstaMember.getFromLikeablePeople();
-        for (LikeablePerson likeablePerson : MyLikePeople) {
+        List<LikeablePerson> mylikePeople = fromInstaMember.getFromLikeablePeople();
+        for (LikeablePerson likeablePerson : mylikePeople) {
             //기존에 등록되었던 인스타id 이면
             if (username.equals(likeablePerson.getToInstaMemberUsername())) {
                 //호감 사유가 동일하면 에러 메세지, 동일하지 않으면 update
@@ -73,7 +73,7 @@ public class LikeablePersonService {
         }
 
         long likeablePersonFromMax = AppConfig.getLikeablePersonFromMax();
-        if (MyLikePeople.size() >= likeablePersonFromMax) {
+        if (mylikePeople.size() >= likeablePersonFromMax) {
             return RsData.of("F-1", "호감을 등록할 수 있는 인원("+ likeablePersonFromMax + "명)을 초과하였습니다.");
 
         }

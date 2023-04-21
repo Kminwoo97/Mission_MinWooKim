@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class AddForm {
+public class LikeForm {
     private String username;
     private int attractiveTypeCode;
 }

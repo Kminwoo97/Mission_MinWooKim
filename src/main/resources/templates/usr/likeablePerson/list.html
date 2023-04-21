@@ -6,7 +6,7 @@
 
 <body>
 
-<mai layout:fragment="main">
+<main layout:fragment="main">
     <th:block th:unless="${@rq.member.hasConnectedInstaMember}">
         <div>먼저 본인의 인스타그램 아이디를 입력해주세요.</div>
 
@@ -16,7 +16,6 @@
     </th:block>
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
-        <span th:text="|호감 표시 인원 수 : ${likeablePeople.size()}(최대 ${@environment.getProperty('custom.likeablePerson.from.max')}명)|"></span>
         <ul>
             <li th:each="likeablePerson: ${likeablePeople}">
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
@@ -24,14 +23,17 @@
                       th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
 
                 <!-- a 태그는 기본적으로 GET 요청인데 javascript 를 이용해서 아래의 form 으로 요청을 보낸다.
-                form 태그는 기본적으로 get,post만 가능하지만 spring.mvc.hiddenmethod.enable 설정을 true로 하면 허용된다.-->
+               form 태그는 기본적으로 get,post만 가능하지만 spring.mvc.hiddenmethod.enable 설정을 true로 하면 허용된다.-->
                 <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
-                <form hidden th:action="@{|delete/${likeablePerson.id}|}" th:method="DELETE"></form>
+                <form hidden th:action="@{|/likeablePerson/cancel/${likeablePerson.id}|}" method="POST">
+                    <input type="hidden" name="_method" value="delete">
+                </form>
             </li>
         </ul>
     </th:block>
-</mai>
+</main>
 </body>
 
 </html>
+
 

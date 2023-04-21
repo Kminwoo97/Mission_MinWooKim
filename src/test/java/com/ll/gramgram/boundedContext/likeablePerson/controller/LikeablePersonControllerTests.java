@@ -1,6 +1,7 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.likeablePerson.dto.AddForm;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
@@ -264,13 +265,15 @@ public class LikeablePersonControllerTests {
 
     @Test
     @DisplayName("호감등록은 최대 10명까지만 가능하다.")
-    @WithUserDetails("user3")
+    @WithUserDetails("user2")
     void t011() throws Exception{
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        //when - 15명을 호감 등록해보자.
+        long likeablePersonFromMax = AppConfig.getLikeablePersonFromMax();
+
+        //when - likeablePersonFromMax + 1명을 호감 등록해보자.
         ResultActions resultActions = null;
-        for(int i=1; i<=15; i++){
+        for(int i=1; i<=likeablePersonFromMax+1; i++){
             resultActions = mvc
                     .perform(post("/likeablePerson/add")
                             .with(csrf())

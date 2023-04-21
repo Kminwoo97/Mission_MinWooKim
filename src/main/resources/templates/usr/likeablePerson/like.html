@@ -55,7 +55,7 @@
         </script>
 
         <form th:action method="POST" className="p-10 max-w-sm flex flex-col gap-4"
-              onSubmit="AddForm__submit(this); return false;">
+              onSubmit="LikeForm__submit(this); return false;">
             <div>
                 당신의 인스타ID : <span className="badge" th:text="${@rq.member.instaMember.username}"></span>
             </div>

@@ -70,8 +70,8 @@ public class LikeablePersonController {
 
     //호감 목록 삭제
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long likeablePersonId){
+    @DeleteMapping("/cancel/{id}")
+    public String cancel(@PathVariable("id") Long likeablePersonId){
         //삭제하려는 호감이 존재하는지 꺼내와본다.
         LikeablePerson likeablePerson = likeablePersonService.findById(likeablePersonId);
 

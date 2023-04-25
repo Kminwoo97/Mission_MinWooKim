@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.member.controller;
 
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
+import com.ll.gramgram.boundedContext.member.dto.JoinForm;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -29,16 +30,7 @@ public class MemberController {
         return "usr/member/join";
     }
 
-    @AllArgsConstructor // @Setter 도 가능, 데이터를 저장할 방편을 마련하기 위해서
-    @Getter // joinForm.getUsername() 이런 코드 가능하게
-    public static class JoinForm {
-        @NotBlank // 비어있지 않아야 하고, 공백으로만 이루어 지지도 않아야 한다.
-        @Size(min = 4, max = 30) // 4자 이상, 30자 이하
-        private final String username;
-        @NotBlank
-        @Size(min = 4, max = 30)
-        private final String password;
-    }
+
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
@@ -51,7 +43,7 @@ public class MemberController {
         }
 
         // 아래 링크로 리다이렉트(302, 이동) 하고 그 페이지에서 메세지 보여줘
-        return rq.redirectWithMsg("/member/login", joinRs);
+        return rq.redirectWithMsg("/usr/member/login", joinRs);
     }
 
     @PreAuthorize("isAnonymous()")

@@ -1,6 +1,7 @@
 package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ll.gramgram.base.baseEntity.BaseEntity;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,15 +20,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @ToString
 @Entity
 @Getter
-public class LikeablePerson {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    @CreatedDate
-    private LocalDateTime createDate;
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
-
+public class LikeablePerson extends BaseEntity {
     @ManyToOne
     @ToString.Exclude // 양방향을 걸면, 여기에 달아주는게 보통이다. 이렇게 해야 무한재귀가 실행되지 않는다.
     private InstaMember fromInstaMember; // 호감을 표시한 사람(인스타 멤버)

@@ -13,17 +13,22 @@ import java.util.Enumeration;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-
     private final Rq rq;
 
     @GetMapping("/")
     public String showMain() {
-        return "usr/home/main";
+        if (rq.isLogout()) return "redirect:/usr/member/login";
+
+        return "redirect:/usr/member/me";
     }
 
-    @GetMapping("/debugSession")
+    @GetMapping("/usr/home/about")
+    public String showAbout() {
+        return "usr/home/about";
+    }
+
+    @GetMapping("/usr/debugSession")
     @ResponseBody
-    @PreAuthorize("hasAuthority('admin')")
     public String showDebugSession(HttpSession session) {
         StringBuilder sb = new StringBuilder("Session content:\n");
 
@@ -37,10 +42,9 @@ public class HomeController {
         return sb.toString().replaceAll("\n", "<br>");
     }
 
-    //historyBack() 기능 테스트
-    @GetMapping("/historyBackTest")
+    @GetMapping("/usr/historyBackTest")
     @PreAuthorize("hasAuthority('admin')")
     public String showHistoryBackTest(HttpSession session) {
-        return rq.historyBack("회원님은 여기에 접근할 수 없습니다.");
+        return rq.historyBack("여기는 당신같은 사람이 오면 안되요.");
     }
 }

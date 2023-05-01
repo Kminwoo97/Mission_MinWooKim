@@ -37,4 +37,4 @@ out/
 .vscode/
 
 #application.properties 에 중요정보 보관
-application.properties
+application-secret.yml

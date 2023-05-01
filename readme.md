@@ -48,16 +48,5 @@
     - [x] 아직 우리 서비스에 등록되지 않은 인스타 유저에게도 호감표시 가능
 
 
-# application.properties
-* 설정 정보저장
-```properties
-#db 커넥팅 정보
-db.url = DB 커넥팅 주소
-db.username = 아이디
-db.password = 비밀번호
-
-#OAuth 발급키
-KAKAO_ID = 카카오 발급 ID
-GOOGLE_ID = 구글 발급 ID
-GOOGLE_SECRET = 구글 발급 Secret Key
-```
+## 설정정보
+* application-secret.yml.default 를 참조하여 application-secret.yml 작성

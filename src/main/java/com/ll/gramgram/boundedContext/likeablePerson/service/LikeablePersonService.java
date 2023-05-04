@@ -56,6 +56,7 @@ public class LikeablePersonService {
         // 너를 좋아하는 호감표시 생겼어.
         toInstaMember.addToLikeablePerson(likeablePerson);
 
+        //호감표기 시 -> 알림 생성 이벤트 발생
         publisher.publishEvent(new EventAfterLike(this, likeablePerson));
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
@@ -71,6 +72,7 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData cancel(LikeablePerson likeablePerson) {
+        //호감취소 시 -> 호감 취소 이벤트 발생
         publisher.publishEvent(new EventBeforeCancelLike(this, likeablePerson));
 
         // 너가 생성한 좋아요가 사라졌어.
@@ -197,6 +199,7 @@ public class LikeablePersonService {
         int oldAttractiveTypeCode = likeablePerson.getAttractiveTypeCode();
         RsData rsData = likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
 
+        //변경에 성공하면 이벤트 발생
         if (rsData.isSuccess()) {
             publisher.publishEvent(new EventAfterModifyAttractiveType(this, likeablePerson, oldAttractiveTypeCode, attractiveTypeCode));
         }

@@ -36,13 +36,7 @@ public class LikeablePerson extends BaseEntity {
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
     public boolean isModifyUnlocked() {
-        long remainTimeSeconds = getElapsedTime();
-
-        if(remainTimeSeconds < AppConfig.getLikeablePersonModifyCoolTime()){
-            return false;
-        }
-        return true;
-//        return modifyUnlockDate.isBefore(LocalDateTime.now());
+        return modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
     private long getElapsedTime() {

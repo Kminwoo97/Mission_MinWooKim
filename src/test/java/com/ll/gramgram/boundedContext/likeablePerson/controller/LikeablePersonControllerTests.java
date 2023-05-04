@@ -134,7 +134,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("수정 폼 - 쿨타임 적용으로 400에러")
+    @DisplayName("수정 폼")
     @WithUserDetails("user3")
     void t014() throws Exception {
         // WHEN
@@ -146,27 +146,26 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("showModify"))
-//                .andExpect(status().is2xxSuccessful())
-                .andExpect(status().is4xxClientError());
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="1"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="2"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        <input type="radio" name="attractiveTypeCode" value="3"
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        inputValue__attractiveTypeCode = 2;
-//                        """.stripIndent().trim())))
-//                .andExpect(content().string(containsString("""
-//                        id="btn-modify-like-1"
-//                        """.stripIndent().trim())));
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="1"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="2"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        <input type="radio" name="attractiveTypeCode" value="3"
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        inputValue__attractiveTypeCode = 2;
+                        """.stripIndent().trim())))
+                .andExpect(content().string(containsString("""
+                        id="btn-modify-like-1"
+                        """.stripIndent().trim())));
     }
 
     @Test
-    @DisplayName("수정 폼 처리 - 쿨타임 적용으로 400 에러")
+    @DisplayName("수정 폼 처리")
     @WithUserDetails("user3")
     void t015() throws Exception {
         // WHEN
@@ -182,8 +181,7 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("modify"))
-//                .andExpect(status().is3xxRedirection());
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -215,7 +213,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("호감취소 - 쿨타임 적용해서 400 에러")
+    @DisplayName("호감취소")
     @WithUserDetails("user3")
     void t006() throws Exception {
         // WHEN
@@ -230,12 +228,11 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("cancel"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrlPattern("/usr/likeablePerson/list**"))
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/usr/likeablePerson/list**"))
         ;
 
-//        assertThat(likeablePersonService.findById(1L).isPresent()).isEqualTo(false);
+        assertThat(likeablePersonService.findById(1L).isPresent()).isEqualTo(false);
     }
 
     @Test
@@ -384,15 +381,15 @@ public class LikeablePersonControllerTests {
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
-//                .andExpect(status().is3xxRedirection());
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is3xxRedirection());
+//                .andExpect(status().is4xxClientError());
 
-//        Optional<LikeablePerson> opLikeablePerson = likeablePersonService.findByFromInstaMember_usernameAndToInstaMember_username("insta_user3", "insta_user4");
-//
-//        int newAttractiveTypeCode = opLikeablePerson
-//                .map(LikeablePerson::getAttractiveTypeCode)
-//                .orElse(-1);
-//
-//        assertThat(newAttractiveTypeCode).isEqualTo(2);
+        Optional<LikeablePerson> opLikeablePerson = likeablePersonService.findByFromInstaMember_usernameAndToInstaMember_username("insta_user3", "insta_user4");
+
+        int newAttractiveTypeCode = opLikeablePerson
+                .map(LikeablePerson::getAttractiveTypeCode)
+                .orElse(-1);
+
+        assertThat(newAttractiveTypeCode).isEqualTo(2);
     }
 }

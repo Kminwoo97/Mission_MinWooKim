@@ -35,6 +35,10 @@ public class Notification extends BaseEntity {
         return readDate != null;
     }
 
+    public void markAsRead() {
+        readDate = LocalDateTime.now();
+    }
+
     public String getCreateDateAfterStrHuman() {
         return Ut.time.diffFormat1Human(LocalDateTime.now(), getCreateDate());
     }
@@ -44,11 +48,6 @@ public class Notification extends BaseEntity {
         return getCreateDate().isAfter(LocalDateTime.now().minusMinutes(60));
     }
 
-    public void markAsRead(){
-        readDate = LocalDateTime.now();
-    }
-
-    //html 에 표기를 호감사유 표기를 위해 선언
     public String getOldAttractiveTypeDisplayName() {
         return switch (oldAttractiveTypeCode) {
             case 1 -> "외모";
@@ -57,7 +56,6 @@ public class Notification extends BaseEntity {
         };
     }
 
-    //html 에 표기를 호감사유 표기를 위해 선언
     public String getNewAttractiveTypeDisplayName() {
         return switch (newAttractiveTypeCode) {
             case 1 -> "외모";
@@ -66,7 +64,6 @@ public class Notification extends BaseEntity {
         };
     }
 
-    //html 에 성별표기를 위해서 선언
     public String getNewGenderDisplayName() {
         return switch (newGender) {
             case "W" -> "여성";

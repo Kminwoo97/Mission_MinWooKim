@@ -17,17 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationEventListener {
     private final NotificationService notificationService;
 
-    //호감표기 이벤트 발생 시, 호감등록 알림 생성
     @EventListener
-    public void listen(EventAfterLike event){
+    public void listen(EventAfterLike event) {
         LikeablePerson likeablePerson = event.getLikeablePerson();
 
         notificationService.makeLike(likeablePerson);
     }
 
-    //호감사유 변경 이벤트 발생 시, 호감사유 변경 알림 생성
     @EventListener
-    public void listen(EventAfterModifyAttractiveType event){
+    public void listen(EventAfterModifyAttractiveType event) {
         LikeablePerson likeablePerson = event.getLikeablePerson();
 
         notificationService.makeModifyAttractive(likeablePerson, event.getOldAttractiveTypeCode());

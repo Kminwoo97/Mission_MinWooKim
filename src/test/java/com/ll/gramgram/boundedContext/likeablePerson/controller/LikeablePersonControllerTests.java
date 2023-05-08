@@ -172,7 +172,6 @@ public class LikeablePersonControllerTests {
         ResultActions resultActions = mvc
                 .perform(post("/usr/likeablePerson/modify/2")
                         .with(csrf()) // CSRF 키 생성
-                        .param("username", "abcd")
                         .param("attractiveTypeCode", "3")
                 )
                 .andDo(print());
@@ -365,7 +364,7 @@ public class LikeablePersonControllerTests {
     }
 
     @Test
-    @DisplayName("기존에 호감을 표시한 유저에게 새로운 사유로 호감을 표시하면 추가가 아니라 수정이 된다. - 쿨타임 적용해서 400 에러")
+    @DisplayName("기존에 호감을 표시한 유저에게 새로운 사유로 호감을 표시하면 추가가 아니라 수정이 된다.")
     @WithUserDetails("user3")
     void t013() throws Exception {
         // WHEN
@@ -382,7 +381,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
-//                .andExpect(status().is4xxClientError());
 
         Optional<LikeablePerson> opLikeablePerson = likeablePersonService.findByFromInstaMember_usernameAndToInstaMember_username("insta_user3", "insta_user4");
 
@@ -391,5 +389,48 @@ public class LikeablePersonControllerTests {
                 .orElse(-1);
 
         assertThat(newAttractiveTypeCode).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("호감취소는 쿨타임이 지나야 가능하다.")
+    @WithUserDetails("user3")
+    void t016() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/usr/likeablePerson/3")
+                                .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("cancel"))
+                .andExpect(status().is4xxClientError())
+        ;
+
+        assertThat(likeablePersonService.findById(3L).isPresent()).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("호감사유변경은 쿨타임이 지나야 가능하다.")
+    @WithUserDetails("user3")
+    void t017() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/usr/likeablePerson/modify/3")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("attractiveTypeCode", "3")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(status().is4xxClientError());
+
+        assertThat(likeablePersonService.findById(3L).get().getAttractiveTypeCode()).isEqualTo(2);
     }
 }

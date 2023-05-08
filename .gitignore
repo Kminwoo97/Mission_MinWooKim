@@ -36,5 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
 #application.properties 에 중요정보 보관
 application-secret.yml

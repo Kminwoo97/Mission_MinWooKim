@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.LocaleResolver;
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @RequestScope
@@ -168,5 +166,18 @@ public class Rq {
         Map<String, String[]> parameterMap = req.getParameterMap();
 
         return Ut.json.toStr(parameterMap);
+    }
+
+    public Map<String, String> getAllParams(){
+        Map<String, String> params = new HashMap<>();
+        Enumeration<String> parameterNames = req.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String name = parameterNames.nextElement();
+            String value = req.getParameter(name);
+            params.put(name, value);
+            System.out.println(name +" : " + value);
+        }
+
+        return params;
     }
 }

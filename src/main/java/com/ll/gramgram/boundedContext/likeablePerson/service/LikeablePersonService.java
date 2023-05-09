@@ -15,9 +15,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -218,5 +217,76 @@ public class LikeablePersonService {
 
 
         return RsData.of("S-1", "호감사유변경이 가능합니다.");
+    }
+
+    public List<LikeablePerson> filteredLikeablePerson(InstaMember instaMember, Map<String, String> requestParams) {
+        List<LikeablePerson> toLikeablePeople = instaMember.getToLikeablePeople();
+
+        //성별 필터링
+        String gender = (String) requestParams.get("gender");
+        if (gender != null && !gender.equals("")) {
+            toLikeablePeople = toLikeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender))
+                    .collect(Collectors.toList());
+        }
+
+        //호감사사유 필터링
+        String attractiveTypeCode = requestParams.get("attractiveTypeCode");
+        if (attractiveTypeCode != null && !attractiveTypeCode.equals("")) {
+            toLikeablePeople = toLikeablePeople.stream()
+                    .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode()==Integer.parseInt(attractiveTypeCode))
+                    .collect(Collectors.toList());
+        }
+
+        //정렬
+        String sortCode = requestParams.get("sortCode");
+        if (sortCode != null && !sortCode.equals("")) {
+            //1 - 날짜(내림차순) - 최신
+            //2 - 날짜(오름차순) - 오래 된 것부터
+            //3 - 호감을 표한 사람을 기준으로 인기 많은 순서
+            //4 - 호감을 표한 사람을 기준으로 인기 적은 순서
+            //5 - 성별(여성 -> 남자)
+            //6 - 호감사유 순서(외모 -> 성격 -> 능력)
+            if (sortCode.equals("1")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed())
+                        .collect(Collectors.toList());
+            } else if (sortCode.equals("2")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
+                        .collect(Collectors.toList());
+            } else if (sortCode.equals("3")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(Comparator.comparing(lp -> lp.getFromInstaMember() == null ? 0 : -lp.getFromInstaMember().getToLikeablePeople().size()))
+                        .collect(Collectors.toList());
+
+            } else if (sortCode.equals("4")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(Comparator.comparing(lp -> lp.getFromInstaMember() == null ? 0 : lp.getFromInstaMember().getToLikeablePeople().size()))
+                        .collect(Collectors.toList());
+
+            } else if (sortCode.equals("5")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(
+                                Comparator.comparing(LikeablePerson::getFromInstaMember, Comparator.comparing(InstaMember::getGender))
+                                        .thenComparing(LikeablePerson::getCreateDate).reversed()
+                        )
+                        .collect(Collectors.toList());
+
+            } else if (sortCode.equals("6")) {
+
+                toLikeablePeople = toLikeablePeople.stream()
+                        .sorted(Comparator.comparing(LikeablePerson::getAttractiveTypeCode).reversed()
+                                .thenComparing(LikeablePerson::getCreateDate).reversed())
+                        .collect(Collectors.toList());
+            }
+        }
+
+        return toLikeablePeople;
     }
 }

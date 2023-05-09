@@ -258,15 +258,19 @@ public class LikeablePersonService {
                         .sorted(Comparator.comparing(LikeablePerson::getCreateDate))
                         .collect(Collectors.toList());
             } else if (sortCode.equals("3")) {
-
                 toLikeablePeople = toLikeablePeople.stream()
-                        .sorted(Comparator.comparing(lp -> lp.getFromInstaMember() == null ? 0 : -lp.getFromInstaMember().getToLikeablePeople().size()))
+                        .sorted(Comparator.comparing(LikeablePerson::getFromInstaMember,
+                                Comparator.comparing(InstaMember::getLikes)).reversed()
+                                .thenComparing(LikeablePerson::getCreateDate)
+                        )
                         .collect(Collectors.toList());
 
             } else if (sortCode.equals("4")) {
-
                 toLikeablePeople = toLikeablePeople.stream()
-                        .sorted(Comparator.comparing(lp -> lp.getFromInstaMember() == null ? 0 : lp.getFromInstaMember().getToLikeablePeople().size()))
+                        .sorted(Comparator.comparing(LikeablePerson::getFromInstaMember,
+                                Comparator.comparing(InstaMember::getLikes))
+                                .thenComparing(LikeablePerson::getCreateDate)
+                        )
                         .collect(Collectors.toList());
 
             } else if (sortCode.equals("5")) {

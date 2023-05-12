@@ -290,7 +290,16 @@ public class LikeablePersonService {
                         .collect(Collectors.toList());
             }
         }
-
         return toLikeablePeople;
     }
+
+    public List<LikeablePerson> findByToInstaMember(String username, String gender, String attractiveTypeCode, String sortCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("gender", gender);
+        params.put("attractiveTypeCode", attractiveTypeCode);
+        params.put("sortCode", sortCode);
+        return filteredLikeablePerson(instaMemberService.findByUsername(username).get(), params);
+    }
+
+
 }

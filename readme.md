@@ -59,4 +59,3 @@
 
 ## 설정정보
 * application-secret.yml.default 를 참조하여 application-secret.yml 작성
-* 무중단 배포 테스트

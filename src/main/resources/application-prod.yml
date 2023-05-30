@@ -17,6 +17,8 @@ spring:
       host: 172.17.0.1
   lifecycle:
     timeout-per-shutdown-phase: 1m #스프링 부트 종료되는데 최대 1분까지 기다린다.
+  autoconfigure:
+    exclude:
   datasource:
     url: jdbc:mariadb://172.17.0.1:3306/gram__prod?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     driver-class-name: org.mariadb.jdbc.Driver
